@@ -5,6 +5,7 @@ Add a script tag that points to CDN version of jQuery 1.*
 Add a script tag that loads your script file from http://m.edumedia.ca/
 **************************/
 var scriptsLoaded = 0;
+var weatherData = [];
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -31,33 +32,70 @@ function loadData(widgetclass) {
 
 function onSuccess(forecastData) {
   console.log(forecastData.hourly.data);
-  var x = new Date(forecastData.time * 1000);
-   
-  var htmlForcast = "";
+  buildTable(forecastData);
+} 
 
-  $weather = $('.weather-forecast');
+function buildTable(forecastData) {
+  // Create the header of the table
+  weatherData.push([" Hour ", 
+                    " Humidity ", 
+                    " Chance of Rain ", 
+                    " Temperature ", 
+                    " Feels like ", 
+                    " Wind speed ", 
+                    " Weather "
+  ]);
   
+  // Fill the forecast data into the table
   for(var i=0; i<24; i++) {
     hourlyWeather = forecastData.hourly.data[i];
     hour = new Date(hourlyWeather.time * 1000);
-    icon = hourlyWeather.icon;
+    weatherHour = hour.getHours() + ":00";
 
-    console.log(hour.getHours() + ":00");
-    
-    htmlForcast = hour.getHours() + ":00 "+icon;
-    $weather.add("<div>");
-    $weather.text(htmlForcast);
-    
+    console.log(weatherHour);
+
+    weatherData.push([weatherHour,
+                      hourlyWeather.humidity, 
+                      hourlyWeather.precipProbability,
+                      hourlyWeather.temperature,
+                      hourlyWeather.apparentTemperature,
+                      hourlyWeather.windSpeed,
+                      hourlyWeather.summary
+    ]); 
     if (hour.getHours() === 23) {
       break;
     }
   }
-  
-} 
+
+  console.log(weatherData); 
+
+  var widget = $(".weather-forecast");
+  widget.html("");
+  var wTable = $("<table>", {"id": "newTable"}).appendTo(widget);
+  var rowLength = weatherData.length;
+  var colLength = weatherData[0].length;
+  console.log(colLength);
+
+  // Print the header for the table
+  var trow = $("<tr>", {"class": "trClass"}).appendTo(wTable);
+
+  for (var j=0; j<colLength; j++) {
+      $("<th>", {
+        "class": "thClass"
+      }).appendTo(trow).html(weatherData[0][j]);
+  }
+   
+  // Print the forecast data
+  for (var i = 1; i < rowLength; i < i++) {
+    trow = $("<tr>", {"class": "trClass"}).appendTo(wTable);
+    for (j = 0; j < colLength; j++) {
+        $("<td>", {"class": "tdClass"}).appendTo(trow).html(weatherData[i][j]);
+    }
+  }
+}
 
 function buildWidget(widgetclass){
   loadData(widgetclass);
-
 }
 
 function loadCount(){
