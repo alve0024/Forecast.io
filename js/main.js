@@ -25,15 +25,22 @@ function init(){
 
 function loadData(widgetclass) {
   var apiKey = "fda235c0e8003cf980cc7ef67ef32c33";
-  var apiURL = "https://api.forecast.io/forecast/"+apiKey+"/45.3470,-75.7594?units=ca&exclude=daily,minutly,flags" 
-  console.log("Using div with class %s", widgetclass); 
+  var apiURL = "https://api.forecast.io/forecast/"+apiKey+"/45.3470,-75.7594?units=ca&exclude=daily,minutly,flags";
   $.get(apiURL, onSuccess, "jsonp");
 }
 
 function onSuccess(forecastData) {
-  console.log(forecastData.hourly.data);
-  buildTable(forecastData);
+  displayDate(forecastData);
+ // buildTable(forecastData);
 } 
+
+function displayDate(){
+  var d = new Date();
+  var month = d.getMonth()+1;
+  var day = d.getDate();
+  var widget = $('.weather-forecast');
+  widget.append("Curent condition for today, "+day+"/"+month);
+}
 
 function buildTable(forecastData) {
   // Create the header of the table
@@ -51,11 +58,9 @@ function buildTable(forecastData) {
     hourlyWeather = forecastData.hourly.data[i];
     hour = new Date(hourlyWeather.time * 1000);
     weatherHour = hour.getHours() + ":00";
-
-    console.log(weatherHour);
-
+    humidity = Math.floor(hourlyWeather.humidity*100);
     weatherData.push([weatherHour,
-                      hourlyWeather.humidity, 
+                      humidity+"%", 
                       hourlyWeather.precipProbability,
                       hourlyWeather.temperature,
                       hourlyWeather.apparentTemperature,
@@ -65,16 +70,13 @@ function buildTable(forecastData) {
     if (hour.getHours() === 23) {
       break;
     }
-  }
-
-  console.log(weatherData); 
-
+  } 
+ 
   var widget = $(".weather-forecast");
   widget.html("");
   var wTable = $("<table>", {"id": "newTable"}).appendTo(widget);
   var rowLength = weatherData.length;
   var colLength = weatherData[0].length;
-  console.log(colLength);
 
   // Print the header for the table
   var trow = $("<tr>", {"class": "trClass"}).appendTo(wTable);
