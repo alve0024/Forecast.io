@@ -30,16 +30,18 @@ function loadData(widgetclass) {
 }
 
 function onSuccess(forecastData) {
-  displayDate(forecastData);
- // buildTable(forecastData);
+  displayWeatherToday(forecastData);
+  buildTable(forecastData);
 } 
 
-function displayDate(){
+function displayWeatherToday(forecastData){
   var d = new Date();
   var month = d.getMonth()+1;
   var day = d.getDate();
-  var widget = $('.weather-forecast');
-  widget.append("Curent condition for today, "+day+"/"+month);
+  var temperature = Math.floor(forecastData.hourly.data[0].temperature);
+  $('.weather-forecast').append('<div id="weatherToday">');
+  $('#weatherToday').append("Current condition for today, "+day+"/"+month);
+  $('#weatherToday').append('<h1>'+temperature+'°C </h1>');
 }
 
 function buildTable(forecastData) {
@@ -72,9 +74,10 @@ function buildTable(forecastData) {
     }
   } 
  
-  var widget = $(".weather-forecast");
+  $("#weatherToday").append('<div id="weatherTable">');
+  var widget = $("#weatherTable");
   widget.html("");
-  var wTable = $("<table>", {"id": "newTable"}).appendTo(widget);
+  var wTable = $("<table>", {"id": "wTable"}).appendTo(widget);
   var rowLength = weatherData.length;
   var colLength = weatherData[0].length;
 
@@ -108,3 +111,6 @@ function loadCount(){
       console.log("both scripts loaded");
     }
 }
+
+
+  
