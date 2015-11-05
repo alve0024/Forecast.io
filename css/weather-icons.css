@@ -5,13 +5,12 @@
 }
 
 table {
-  border: 1px solid hsl(0, 0%, 41%);
   border-collapse: collapse;
 }
 
 th {
   padding: 10px;
-  text-align: left;
+  text-align: center;
 }
 
 tr {
@@ -19,8 +18,19 @@ tr {
 }
 
 td {
-  text-align: center;
+  text-align: left;
   padding: 3px;
+}
+
+.wi.current {
+  font-size: 62;
+  float: left;
+  text-align: center;
+  padding-right: 2rem;
+}
+
+.temp {
+
 }
 
 /*!
