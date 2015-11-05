@@ -69,20 +69,8 @@ function getWeatherIcon(icon) {
   return weatherIcon[icon];
 }
 
-function buildTable(forecastData) {
-  // Create the header of the table
-  weatherData.push([" Hour ", 
-                    " Humidity ", 
-                    " Chance of Rain ", 
-                    " Temperature ", 
-                    " Feels like ", 
-                    " Wind speed ",
-                    " ", 
-                    " Weather "
-  ]);
-  
-
-  // Fill the forecast data into the table
+function buildTable(forecastData) {  
+  // Fill the forecast data into the matrix
   for(var i=0; i<24; i++) {
     hourlyWeather = forecastData.hourly.data[i];
     hour = new Date(hourlyWeather.time * 1000);
@@ -90,9 +78,7 @@ function buildTable(forecastData) {
     humidity = Math.floor(hourlyWeather.humidity*100);
     weatherData.push([weatherHour,
                       humidity+"%", 
-                      hourlyWeather.precipProbability,
                       hourlyWeather.temperature,
-                      hourlyWeather.apparentTemperature,
                       hourlyWeather.windSpeed+' Km/h',
                       hourlyWeather.icon,
                       hourlyWeather.summary
@@ -109,23 +95,15 @@ function buildTable(forecastData) {
   var rowLength = weatherData.length;
   var colLength = weatherData[0].length;
 
-  // Print the header for the table
-  var trow = $("<tr>", {"class": "trClass"}).appendTo(wTable);
-
-  for (var j=0; j<colLength; j++) {
-      $("<th>", {
-        "class": "thClass"
-      }).appendTo(trow).html(weatherData[0][j]);
-  }
    
   var weatherIcon;
   // Print the forecast data
-  for (var i = 1; i < rowLength; i < i++) {
+  for (var i = 0; i < rowLength; i < i++) {
     trow = $("<tr>", {"class": "trClass"}).appendTo(wTable);
     for (j = 0; j < colLength; j++) {
         if (j==colLength-2) {
           weatherIcon = getWeatherIcon(weatherData[i][j]);
-          $("<td>", {"class": "tdClass"}).appendTo(trow).html('<i class="wi '+weatherIcon+'"></i> ');
+          $("<td>", {"class": "tdClass"}).appendTo(trow).html('<i class="wi '+weatherIcon+'"></i>');
         } else {
           $("<td>", {"class": "tdClass"}).appendTo(trow).html(weatherData[i][j]);
         }
