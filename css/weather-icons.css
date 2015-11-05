@@ -6,6 +6,7 @@
 
 table {
   border-collapse: collapse;
+  padding: 10px;
 }
 
 th {
@@ -13,13 +14,19 @@ th {
   text-align: center;
 }
 
-tr {
+#weatherTable {
+  padding-top: 10px;
+}
 
+tbody tr:nth-child(odd) {
+  background-color: hsl(207, 44%, 49%);
+  color: hsl(0, 0%, 100%);
 }
 
 td {
   text-align: left;
   padding: 3px;
+  padding-right: 30px;
 }
 
 .wi.current {
@@ -29,9 +36,6 @@ td {
   padding-right: 2rem;
 }
 
-.temp {
-
-}
 
 /*!
  *  Weather Icons 2.0.8
