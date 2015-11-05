@@ -31,6 +31,7 @@ function loadData(widgetclass) {
 
 function onSuccess(forecastData) {
   displayWeatherToday(forecastData);
+  console.log(forecastData);
   buildTable(forecastData);
 } 
 
@@ -39,9 +40,33 @@ function displayWeatherToday(forecastData){
   var month = d.getMonth()+1;
   var day = d.getDate();
   var temperature = Math.floor(forecastData.hourly.data[0].temperature);
+  var weatherIcon = getWeatherIcon(forecastData.hourly.data[0].icon);
+  var summary = forecastData.hourly.data[0].summary;
   $('.weather-forecast').append('<div id="weatherToday">');
-  $('#weatherToday').append("Current condition for today, "+day+"/"+month);
-  $('#weatherToday').append('<h1>'+temperature+'°C </h1>');
+  $('#weatherToday').append('<p>'+"Current condition for today, "+day+"/"+month+'</p>');
+  $('#weatherToday').append('<i class="wi '+weatherIcon+' current"></i>');
+  $('#weatherToday').append('<div class="temp"><h1>    '+temperature+'°C </h1></div>');
+  $('#weatherToday').append('<strong>'+summary+'</strong>');
+}
+
+function getWeatherIcon(icon) {
+  var weatherIcon = {
+    "clear-day"          : "wi-forecast-io-clear-day",
+    "clear-night"        : "wi-forecast-io-clear-night",
+    "rain"               : "wi-forecast-io-rain",
+    "snow"               : "wi-forecast-io-snow",
+    "sleet"              : "wi-forecast-io-sleet",
+    "wind"               : "wi-forecast-io-wind",
+    "fog"                : "wi-forecast-io-fog",
+    "cloudy"             : "wi-forecast-io-cloudy",
+    "partly-cloudy-day"  : "wi-forecast-io-partly-cloudy-day",
+    "partly-cloudy-night": "wi-forecast-io-partly-cloudy-night",
+    "hail"               : "wi-forecast-io-hail",
+    "thunderstorm"       : "wi-forecast-io-thunderstorm",
+    "tornato"            : "wi-forecast-io-tornado"
+  }
+
+  return weatherIcon[icon];
 }
 
 function buildTable(forecastData) {
@@ -51,10 +76,12 @@ function buildTable(forecastData) {
                     " Chance of Rain ", 
                     " Temperature ", 
                     " Feels like ", 
-                    " Wind speed ", 
+                    " Wind speed ",
+                    " ", 
                     " Weather "
   ]);
   
+
   // Fill the forecast data into the table
   for(var i=0; i<24; i++) {
     hourlyWeather = forecastData.hourly.data[i];
@@ -66,7 +93,8 @@ function buildTable(forecastData) {
                       hourlyWeather.precipProbability,
                       hourlyWeather.temperature,
                       hourlyWeather.apparentTemperature,
-                      hourlyWeather.windSpeed,
+                      hourlyWeather.windSpeed+' Km/h',
+                      hourlyWeather.icon,
                       hourlyWeather.summary
     ]); 
     if (hour.getHours() === 23) {
@@ -90,11 +118,18 @@ function buildTable(forecastData) {
       }).appendTo(trow).html(weatherData[0][j]);
   }
    
+  var weatherIcon;
   // Print the forecast data
   for (var i = 1; i < rowLength; i < i++) {
     trow = $("<tr>", {"class": "trClass"}).appendTo(wTable);
     for (j = 0; j < colLength; j++) {
-        $("<td>", {"class": "tdClass"}).appendTo(trow).html(weatherData[i][j]);
+        if (j==colLength-2) {
+          weatherIcon = getWeatherIcon(weatherData[i][j]);
+          $("<td>", {"class": "tdClass"}).appendTo(trow).html('<i class="wi '+weatherIcon+'"></i> ');
+        } else {
+          $("<td>", {"class": "tdClass"}).appendTo(trow).html(weatherData[i][j]);
+        }
+        
     }
   }
 }
