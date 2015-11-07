@@ -1,12 +1,14 @@
 * {
   padding: 0;
-  margin:0;
+  margin: 0;
   box-sizing: border-box;
 }
 
 table {
   border-collapse: collapse;
   padding: 10px;
+  min-width: 500px;
+  max-width: 800px;
 }
 
 th {
