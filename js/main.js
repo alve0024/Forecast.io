@@ -5,7 +5,6 @@ Add a script tag that points to CDN version of jQuery 1.*
 Add a script tag that loads your script file from http://m.edumedia.ca/
 **************************/
 var scriptsLoaded = 0;
-var weatherData = [];
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -21,7 +20,16 @@ function init(){
   jq.addEventListener("load", loadCount);
   jq.setAttribute("src","http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js");
   document.querySelector("head").appendChild(jq);
-};
+}
+
+function loadCount(){
+  scriptsLoaded++;
+    if(scriptsLoaded === 2){
+      //call the function in My widget script to load the JSON and build the widget
+      loadData(".weather-forecast");
+      console.log("both scripts loaded");
+    }
+}
 
 function loadData(widgetclass) {
   var apiKey = "fda235c0e8003cf980cc7ef67ef32c33";
@@ -31,7 +39,6 @@ function loadData(widgetclass) {
 
 function onSuccess(forecastData) {
   displayWeatherToday(forecastData);
-  console.log(forecastData);
   buildTable(forecastData);
 } 
 
@@ -64,22 +71,21 @@ function getWeatherIcon(icon) {
     "hail"               : "wi-forecast-io-hail",
     "thunderstorm"       : "wi-forecast-io-thunderstorm",
     "tornato"            : "wi-forecast-io-tornado"
-  }
-
+  };
   return weatherIcon[icon];
 }
 
 function buildTable(forecastData) {  
+  var weatherData = [];
   // Fill the forecast data into the matrix
   for(var i=0; i<24; i++) {
     hourlyWeather = forecastData.hourly.data[i];
     hour = new Date(hourlyWeather.time * 1000);
-    weatherHour = hour.getHours() + ":00";
-    humidity = Math.floor(hourlyWeather.humidity*100);
-    weatherData.push([weatherHour,
-                      humidity+"%", 
-                      hourlyWeather.temperature,
-                      hourlyWeather.windSpeed+' Km/h',
+    weatherData.push([hour.getHours() + ":00",
+                      Math.floor(hourlyWeather.humidity*100)+"%", 
+                      hourlyWeather.cloudcover,
+                      hourlyWeather.temperature+"°C",
+                      hourlyWeather.windSpeed+" Km/h",
                       hourlyWeather.icon,
                       hourlyWeather.summary
     ]); 
@@ -94,13 +100,11 @@ function buildTable(forecastData) {
   var wTable = $("<table>", {"id": "wTable"}).appendTo(widget);
   var rowLength = weatherData.length;
   var colLength = weatherData[0].length;
-
-   
-  var weatherIcon;
+  var weatherIcon = '';
   // Print the forecast data
-  for (var i = 0; i < rowLength; i < i++) {
+  for (i = 0; i < rowLength; i++) {
     trow = $("<tr>", {"class": "trClass"}).appendTo(wTable);
-    for (j = 0; j < colLength; j++) {
+    for (var j = 0; j < colLength; j++) {
         if (j==colLength-2) {
           weatherIcon = getWeatherIcon(weatherData[i][j]);
           $("<td>", {"class": "tdClass"}).appendTo(trow).html('<i class="wi '+weatherIcon+'"></i>');
@@ -111,19 +115,3 @@ function buildTable(forecastData) {
     }
   }
 }
-
-function buildWidget(widgetclass){
-  loadData(widgetclass);
-}
-
-function loadCount(){
-  scriptsLoaded++;
-    if(scriptsLoaded === 2){
-      //call the function in My widget script to load the JSON and build the widget
-      buildWidget(".weather-forecast");
-      console.log("both scripts loaded");
-    }
-}
-
-
-  
