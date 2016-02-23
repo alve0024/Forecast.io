@@ -2,7 +2,7 @@
 
 ###Description
 
-*Forecast.io* is a widget that display the forecast of the day and it uses the [Forecast.io](forecast.io "click here to visit the website") API.
+*Forecast.io* is a widget that display the forecast of the day and it uses the [Forecast.io](http://forecast.io "click here to visit the website") API.
 
 This project started as a College Project at Algonquin College and now you can contribute to make it grow. There are a lot of way you can do to help to make it better:
 
